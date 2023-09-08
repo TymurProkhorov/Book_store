@@ -1,7 +1,7 @@
-package mate.academy.book_store.repository;
+package mate.academy.bookstore.repository;
 
-import mate.academy.book_store.model.Book;
 import java.util.List;
+import mate.academy.bookstore.model.Book;
 
 public interface BookRepository {
     Book save(Book book);
