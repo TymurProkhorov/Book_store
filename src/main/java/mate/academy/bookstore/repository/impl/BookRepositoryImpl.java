@@ -1,6 +1,7 @@
 package mate.academy.bookstore.repository.impl;
 
 import jakarta.persistence.EntityManager;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.BookDto;
 import mate.academy.bookstore.mapper.BookMapper;
@@ -10,7 +11,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
