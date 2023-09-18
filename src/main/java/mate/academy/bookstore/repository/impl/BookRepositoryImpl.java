@@ -1,22 +1,22 @@
 package mate.academy.bookstore.repository.impl;
 
-import java.util.List;
+import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
+import mate.academy.bookstore.dto.BookDto;
+import mate.academy.bookstore.mapper.BookMapper;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
+@RequiredArgsConstructor
 @Repository
 public class BookRepositoryImpl implements BookRepository {
     private final SessionFactory sessionFactory;
-
-    @Autowired
-    public BookRepositoryImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private final BookMapper mapper;
 
     @Override
     public Book save(Book book) {
@@ -46,6 +46,14 @@ public class BookRepositoryImpl implements BookRepository {
             return session.createQuery("SELECT b FROM Book b", Book.class).getResultList();
         } catch (Exception e) {
             throw new RuntimeException("Can`t find books from DB.", e);
+        }
+    }
+
+    @Override
+    public BookDto getBookById(Long id) {
+        try (EntityManager entityManager = sessionFactory.createEntityManager()) {
+            Book book = entityManager.find(Book.class, id);
+            return mapper.toDto(book);
         }
     }
 }
