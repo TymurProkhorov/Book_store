@@ -1,5 +1,7 @@
 package mate.academy.bookstore.service.impl;
 
+import java.util.List;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.BookDto;
 import mate.academy.bookstore.dto.CreateBookRequestDto;
@@ -9,8 +11,6 @@ import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.repository.BookRepository;
 import mate.academy.bookstore.service.BookService;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -39,5 +39,8 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(book);
     }
 
-
+    @Override
+    public void deleteById(Long id) {
+        bookRepository.deleteById(id);
+    }
 }
