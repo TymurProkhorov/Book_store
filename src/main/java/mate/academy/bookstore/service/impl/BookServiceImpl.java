@@ -1,7 +1,6 @@
 package mate.academy.bookstore.service.impl;
 
 import java.util.List;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.BookDto;
 import mate.academy.bookstore.dto.BookSearchParameters;
@@ -25,9 +24,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto save(CreateBookRequestDto requestDto) {
         Book book = bookMapper.toModel(requestDto);
-        book.setIsbn("1" + new Random().nextInt(100));
-        Book savedBook = bookRepository.save(book);
-        return bookMapper.toDto(savedBook);
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
@@ -63,5 +60,4 @@ public class BookServiceImpl implements BookService {
                 .map(bookMapper::toDto)
                 .toList();
     }
-
 }
