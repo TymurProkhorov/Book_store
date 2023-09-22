@@ -42,5 +42,4 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         }
         return objectError.getDefaultMessage();
     }
-
 }
