@@ -1,4 +1,4 @@
-package mate.academy.bookstore.security;
+package mate.academy.bookstore.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
