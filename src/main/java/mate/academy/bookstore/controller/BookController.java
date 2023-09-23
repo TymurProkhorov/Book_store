@@ -30,7 +30,7 @@ public class BookController {
     private final BookService bookService;
 
     @Operation(summary = "get all books",
-    description = "getting all books from db")
+            description = "getting all books from db")
     @GetMapping
     public List<BookDto> getAll(Pageable pageable) {
         return bookService.findAll(pageable);
