@@ -24,6 +24,9 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("Can`t complete registration.");
         }
         User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setShippingAddress(request.getShippingAddress());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         User savedUser = userRepository.save(user);
