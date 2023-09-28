@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-user-table
+      id: create-users-table
       author: tim
       changes:
         - createTable:
@@ -41,3 +41,5 @@ databaseChangeLog:
                   name: is_deleted
                   type: boolean
                   defaultValueBoolean: false
+                  constraints:
+                    nullable: false

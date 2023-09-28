@@ -16,17 +16,24 @@ databaseChangeLog:
               - column:
                   name: title
                   type: varchar(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: author
                   type: varchar(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: isbn
                   type: varchar(255)
                   constraints:
+                    nullable: false
                     unique: true
               - column:
                   name: price
-                  type: decimal(38,2)
+                  type: DECIMAL(38,2)
+                  constraints:
+                    nullable: false
               - column:
                   name: description
                   type: varchar(255)
@@ -36,6 +43,3 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   type: boolean
-                  defaultValueBoolean: false
-                  constraints:
-                    nullable: false
