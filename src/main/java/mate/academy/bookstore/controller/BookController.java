@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/books")
 public class BookController {
     private final BookService bookService;
-
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "get all books", description = "getting a list of all books")
     @GetMapping
