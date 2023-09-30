@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
         description = "controller for managing authentication and roles")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
