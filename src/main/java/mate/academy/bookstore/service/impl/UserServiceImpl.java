@@ -8,6 +8,7 @@ import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.exception.RegistrationException;
 import mate.academy.bookstore.mapper.user.UserMapper;
 import mate.academy.bookstore.model.Role;
+import mate.academy.bookstore.model.RoleName;
 import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.repository.shoppingcart.ShoppingCartRepository;
@@ -41,8 +42,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         Role roleUser =
-                roleRepository.findById(2L).orElseThrow(
-                        () -> new RuntimeException("Can't find ROLE_USER by id"));
+                roleRepository.findRoleByRoleName(RoleName.ROLE_USER).orElseThrow(
+                        () -> new EntityNotFoundException("Can't find ROLE_USER by name: "
+                                + RoleName.ROLE_USER));
         user.setRoles(Set.of(roleUser));
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUser(user);
