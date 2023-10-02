@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 21211052121105
+      MYSQL_DATABASE: rootroot
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p2121105"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
