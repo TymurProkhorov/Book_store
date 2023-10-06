@@ -29,7 +29,7 @@ services:
       - $DEBUG_PORT:$DEBUG_PORT
     environment:
       SPRING_APPLICATION_JSON: '{
-      "spring.datasource.url" : "jdbc:mysql://mysqldb:$MYSQL_DB_DOCKER_PORT/book_store?serverTimezone=UTC"
+      "spring.datasource.url" : "jdbc:mysql://mysqldb:$MYSQL_DB_DOCKER_PORT/$DATABASE_NAME?serverTimezone=UTC"
       "spring.datasource.username" : "root",
       "spring.datasource.password" : "2121105"
       }'
