@@ -10,7 +10,7 @@ services:
       - MYSQL_DATABASE=$DATABASE_NAME
       - MYSQL_ROOT_PASSWORD=$ROOT_PASSWORD
     ports:
-    - $MYSQL_LOCAL_PORT:$MYSQL_DB_DOCKER_PORT
+    - $MYSQL_DB_LOCAL_PORT:$MYSQL_DB_DOCKER_PORT
     healthcheck:
       test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p2121105" ]
       interval: 30s
@@ -29,7 +29,7 @@ services:
       - $DEBUG_PORT:$DEBUG_PORT
     environment:
       SPRING_APPLICATION_JSON: '{
-      "spring.datasource.url" : "jdbc:mysql://mysqldb:$MYSQL_DB_DOCKER_PORT/$DATABASE_NAME?serverTimezone=UTC"
+      "spring.datasource.url" : "jdbc:mysql://mysqldb:$MYSQL_DB_DOCKER_PORT/$DATABASE_NAME?serverTimezone=UTC",
       "spring.datasource.username" : "root",
       "spring.datasource.password" : "2121105"
       }'
