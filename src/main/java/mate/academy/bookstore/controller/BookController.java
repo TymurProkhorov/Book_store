@@ -1,12 +1,13 @@
 package mate.academy.bookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.book.BookDto;
-import mate.academy.bookstore.dto.book.BookSearchParameters;
+import mate.academy.bookstore.dto.book.BookResponseDto;
 import mate.academy.bookstore.dto.book.CreateBookRequestDto;
 import mate.academy.bookstore.service.BookService;
 import org.springdoc.core.annotations.ParameterObject;
@@ -20,8 +21,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 @Tag(name = "book management", description = "endpoints for managing books")
 @RequiredArgsConstructor
@@ -29,51 +34,57 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/books")
 public class BookController {
     private final BookService bookService;
-    
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "get all books", description = "getting a list of all books")
+
     @GetMapping
-    public List<BookDto> getAll(@ParameterObject Pageable pageable) {
+    @Operation(summary = "Get all books")
+    public List<BookResponseDto> getAllBooks(@ParameterObject Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "get book by id", description = "getting book by id")
     @GetMapping("/{id}")
-    public BookDto getBookById(@PathVariable Long id) {
+    @Operation(summary = "Get book by ID")
+    public BookResponseDto getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "create book", description = "creating new book and adding it to db")
     @PostMapping
-    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookRequestDto) {
-        return bookService.save(bookRequestDto);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new book (Only for admin)")
+    @ApiResponse(responseCode = "201",
+            description = "Book created successfully",
+            content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = BookResponseDto.class))})
+    public BookResponseDto createBook(@RequestBody @Valid CreateBookRequestDto requestDto) {
+        return bookService.save(requestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "delete book", description = "deleting book by id")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        bookService.deleteById(id);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "update book", description = "updating book by id")
     @PutMapping("/{id}")
-    public BookDto update(@PathVariable Long id,
-                          @RequestBody @Valid CreateBookRequestDto requestDto) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Update a book by ID (Only for admin)")
+    @ApiResponse(responseCode = "200",
+            description = "Book updated successfully",
+            content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = BookResponseDto.class))})
+    public BookResponseDto updateBook(@PathVariable Long id,
+                                      @RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookService.update(id, requestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(
-            summary = "search book",
-            description = "searching book by any amount of parameters")
     @GetMapping("/search")
-    public List<BookDto> search(BookSearchParameters searchParameters,
-                                @ParameterObject Pageable pageable) {
+    @Operation(summary = "Search books with parameters")
+    public List<BookResponseDto> search(@RequestParam Map<String, String> searchParameters,
+                                        @ParameterObject Pageable pageable) {
         return bookService.search(searchParameters, pageable);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a book by id (Only for admin)")
+    @ApiResponse(responseCode = "204",
+            description = "Book deleted successfully")
+    public void deleteBook(@PathVariable Long id) {
+        bookService.delete(id);
     }
 }

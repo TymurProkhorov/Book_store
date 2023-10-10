@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.order.request.CreateOrderRequestDto;
-import mate.academy.bookstore.dto.order.request.UpdateOrderStatusRequestDto;
-import mate.academy.bookstore.dto.order.response.OrderItemsResponseDto;
-import mate.academy.bookstore.dto.order.response.OrderResponseDto;
+import mate.academy.bookstore.dto.order.OrderItemResponseDto;
+import mate.academy.bookstore.dto.order.OrderResponseDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.order.OrderItemMapper;
 import mate.academy.bookstore.mapper.order.OrderMapper;
@@ -60,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void updateOrderStatus(
             Long orderId,
-            UpdateOrderStatusRequestDto requestDto) {
+            UpdateOrderStatusDto requestDto) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order by id: " + orderId));
         order.setStatus(requestDto.getStatus());
@@ -68,14 +66,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderItemsResponseDto> getOrderItems(Long orderId) {
+    public List<OrderItemResponseDto> getOrderItems(Long orderId) {
         return orderRepository.findById(orderId).get().getOrderItems().stream()
                 .map(orderItemMapper::toDto)
                 .toList();
     }
 
     @Override
-    public OrderItemsResponseDto getOrderItem(Long orderId, Long itemId) {
+    public OrderItemResponseDto getOrderItem(Long orderId, Long itemId) {
         return orderItemMapper.toDto(orderItemService.findByOrderAndId(orderId, itemId));
     }
 

@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.shoppingcart.request.CreateBookItemDto;
-import mate.academy.bookstore.dto.shoppingcart.request.UpdateBookQuantityDto;
-import mate.academy.bookstore.dto.shoppingcart.response.ShoppingCartResponseDto;
+import mate.academy.bookstore.dto.shoppingcart.AddCartItemRequestDto;
+import mate.academy.bookstore.dto.shoppingcart.ShoppingCartResponseDto;
+import mate.academy.bookstore.dto.shoppingcart.UpdateBookQuantityInCartDto;
 import mate.academy.bookstore.service.ShoppingCartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,35 +26,31 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
-    @PostMapping
-    @Operation(summary = "Add book to shopping cart",
-            description = "Adding the book to shopping cart")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ShoppingCartResponseDto addBookToShoppingCart(
-            @RequestBody @Valid CreateBookItemDto request) {
-        return shoppingCartService.addBookToUserCart(request);
+    @GetMapping
+    @Operation(summary = "Get shopping cart")
+    public ShoppingCartResponseDto getCart() {
+        return shoppingCartService.getShoppingCart();
     }
 
-    @Operation(summary = "get user`s shopping cart",
-            description = "getting user`s shopping cart")
-    @GetMapping
-    public ShoppingCartResponseDto getUserCart() {
-        return shoppingCartService.getUserCart();
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Add book to shopping cart")
+    public ShoppingCartResponseDto addBookToCart(
+            @RequestBody @Valid AddCartItemRequestDto requestDto) {
+        return shoppingCartService.addCartItem(requestDto);
     }
 
     @PutMapping("/cart-items/{cartItemId}")
-    @Operation(summary = "Update book quantity",
-            description = "Updating book quantity in user's shopping cart")
-    public ShoppingCartResponseDto updateShoppingCart(
-            @PathVariable Long cartItemId,
-            @RequestBody @Valid UpdateBookQuantityDto requestDto) {
-        return shoppingCartService.updateBookQuantity(cartItemId, requestDto);
+    @Operation(summary = "Update quantity of book in shopping cart")
+    public ShoppingCartResponseDto updateQuantityOfBook(@PathVariable Long cartItemId,
+        @RequestBody @Valid UpdateBookQuantityInCartDto requestDto) {
+        return shoppingCartService.updateQuantityOfBooks(cartItemId, requestDto);
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete book", description = "Deleting book by id")
-    public ShoppingCartResponseDto deleteBookFromCart(@PathVariable Long cartItemId) {
-        return shoppingCartService.removeBookFromCart(cartItemId);
+    @Operation(summary = "Delete book from shopping cart")
+    public ShoppingCartResponseDto deleteCartItem(@PathVariable Long cartItemId) {
+        return shoppingCartService.deleteCartItem(cartItemId);
     }
 }

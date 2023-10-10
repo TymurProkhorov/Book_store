@@ -1,6 +1,6 @@
 package mate.academy.bookstore.service;
 
-import mate.academy.bookstore.dto.shoppingcart.request.CreateBookItemDto;
+import mate.academy.bookstore.dto.shoppingcart.CreateBookItemDto;
 import mate.academy.bookstore.model.CartItem;
 
 public interface CartItemService {

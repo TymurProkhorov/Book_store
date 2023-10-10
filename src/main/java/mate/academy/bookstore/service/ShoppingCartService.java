@@ -1,8 +1,7 @@
 package mate.academy.bookstore.service;
 
-import mate.academy.bookstore.dto.shoppingcart.request.CreateBookItemDto;
-import mate.academy.bookstore.dto.shoppingcart.request.UpdateBookQuantityDto;
-import mate.academy.bookstore.dto.shoppingcart.response.ShoppingCartResponseDto;
+import mate.academy.bookstore.dto.shoppingcart.CreateBookItemDto;
+import mate.academy.bookstore.dto.shoppingcart.ShoppingCartResponseDto;
 import mate.academy.bookstore.model.ShoppingCart;
 
 public interface ShoppingCartService {

@@ -3,7 +3,7 @@ package mate.academy.bookstore.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.book.BookDtoWithoutCategoryIds;
-import mate.academy.bookstore.dto.category.CategoryDto;
+import mate.academy.bookstore.dto.category.CreateCategoryDto;
 import mate.academy.bookstore.dto.category.CategoryResponseDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.book.BookMapper;
@@ -34,14 +34,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponseDto save(CategoryDto categoryDto) {
+    public CategoryResponseDto save(CreateCategoryDto categoryDto) {
         final Category category = categoryMapper.toEntity(categoryDto);
         final Category savedCategory = categoryRepository.save(category);
         return categoryMapper.toDto(savedCategory);
     }
 
     @Override
-    public CategoryResponseDto update(Long id, CategoryDto categoryDto) {
+    public CategoryResponseDto update(Long id, CreateCategoryDto categoryDto) {
         if (categoryRepository.existsById(id)) {
             Category category = new Category();
             category.setId(id);

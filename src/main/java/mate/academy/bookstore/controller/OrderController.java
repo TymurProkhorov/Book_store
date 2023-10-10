@@ -1,23 +1,24 @@
 package mate.academy.bookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.order.request.CreateOrderRequestDto;
-import mate.academy.bookstore.dto.order.request.UpdateOrderStatusRequestDto;
-import mate.academy.bookstore.dto.order.response.OrderItemsResponseDto;
-import mate.academy.bookstore.dto.order.response.OrderResponseDto;
+import mate.academy.bookstore.dto.order.OrderResponseDto;
 import mate.academy.bookstore.service.OrderService;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Order management", description = "Endpoints for managing orders")
@@ -27,46 +28,50 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     private final OrderService orderService;
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "Create order", description = "creating new user`s order")
-    @PostMapping
-    public OrderResponseDto createOrder(@RequestBody CreateOrderRequestDto requestDto) {
-        return orderService.createOrder(requestDto);
-    }
-
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
-    @Operation(summary = "Get user`s orders",
-            description = "Getting all user`s orders")
+    @Operation(summary = "Retrieve user's order history")
+    @ApiResponse(content = {@Content(mediaType = "application/json",
+            schema = @Schema(implementation = OrderResponseDto.class))})
     public List<OrderResponseDto> getOrderHistory(@ParameterObject Pageable pageable) {
         return orderService.getOrderHistory(pageable);
     }
 
-    @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Update order status",
-            description = "updating user`s order status")
-    public void updateOrderStatus(
-            @PathVariable Long id,
-            @RequestBody UpdateOrderStatusRequestDto requestDto) {
-        orderService.updateOrderStatus(id, requestDto);
+    @PostMapping
+    @Operation(summary = "Place an order")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponse(responseCode = "201",
+            description = "Order placed successfully",
+            content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = OrderResponseDto.class))})
+    public OrderResponseDto placeOrder(PlaceOrderDto placeOrderDto) {
+        return orderService.placeOrder(placeOrderDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PatchMapping("/{orderId}")
+    @Operation(summary = "Update order status. (Only for admin)")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ApiResponse(responseCode = "202",
+            description = "Order status updated successfully")
+    public void updateOrderStatus(@PathVariable Long orderId,
+                                  UpdateOrderStatusDto updateOrderStatusDto) {
+        orderService.updateOrderStatus(orderId, updateOrderStatusDto);
+    }
+
     @GetMapping("/{orderId}/items")
-    @Operation(summary = "Get order items",
-            description = "Getting all user`s order items")
-    public List<OrderItemsResponseDto> getOrderItems(@PathVariable Long orderId) {
+    @Operation(summary = "Retrieve all order items for a specific order")
+    @ApiResponse(content = {@Content(mediaType = "application/json",
+            schema = @Schema(implementation = OrderItemResponseDto.class))})
+    public List<OrderItemResponseDto> getAllOrderItems(@PathVariable Long orderId) {
         return orderService.getOrderItems(orderId);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/{orderId}/items/{itemId}")
-    @Operation(summary = "Get order item",
-            description = "Getting specific user`s order item")
-    public OrderItemsResponseDto getOrderItem(
-            @PathVariable Long orderId,
-            @PathVariable Long itemId) {
+    @Operation(summary = "Retrieve a specific order item within an order")
+    @ApiResponse(content = {@Content(mediaType = "application/json",
+            schema = @Schema(implementation = OrderItemResponseDto.class))})
+    public OrderItemResponseDto getOrderItemById(@PathVariable Long orderId,
+                                                 @PathVariable Long itemId) {
         return orderService.getOrderItem(orderId, itemId);
     }
 }

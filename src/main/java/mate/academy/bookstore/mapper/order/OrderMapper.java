@@ -1,7 +1,7 @@
 package mate.academy.bookstore.mapper.order;
 
 import mate.academy.bookstore.config.MapperConfig;
-import mate.academy.bookstore.dto.order.response.OrderResponseDto;
+import mate.academy.bookstore.dto.order.OrderResponseDto;
 import mate.academy.bookstore.model.Order;
 import mate.academy.bookstore.model.ShoppingCart;
 import org.mapstruct.Mapper;

@@ -2,9 +2,8 @@ package mate.academy.bookstore.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.book.BookDto;
+import mate.academy.bookstore.dto.book.BookResponseDto;
 import mate.academy.bookstore.dto.book.BookDtoWithoutCategoryIds;
-import mate.academy.bookstore.dto.book.BookSearchParameters;
 import mate.academy.bookstore.dto.book.CreateBookRequestDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.book.BookMapper;
@@ -28,19 +27,19 @@ public class BookServiceImpl implements BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
-    public BookDto save(CreateBookRequestDto requestDto) {
+    public BookResponseDto save(CreateBookRequestDto requestDto) {
         Book book = bookMapper.toEntity(requestDto);
         return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
-    public List<BookDto> findAll(Pageable pageable) {
+    public List<BookResponseDto> findAll(Pageable pageable) {
         return bookRepository.findAll(pageable).stream()
                 .map(bookMapper::toDto).toList();
     }
 
     @Override
-    public BookDto getBookById(Long id) {
+    public BookResponseDto getBookById(Long id) {
         Book book = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can`t find book by id: " + "id"));
         return bookMapper.toDto(book);
@@ -52,14 +51,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto update(Long id, CreateBookRequestDto requestDto) {
+    public BookResponseDto update(Long id, CreateBookRequestDto requestDto) {
         Book book = bookMapper.toEntity(requestDto);
         book.setId(id);
         return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
-    public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
+    public List<BookResponseDto> search(BookSearchParameters searchParameters, Pageable pageable) {
         Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
         return bookRepository.findAll(bookSpecification, pageable)
                 .stream()

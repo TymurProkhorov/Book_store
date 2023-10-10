@@ -1,7 +1,7 @@
 package mate.academy.bookstore.mapper.category;
 
 import mate.academy.bookstore.config.MapperConfig;
-import mate.academy.bookstore.dto.category.CategoryDto;
+import mate.academy.bookstore.dto.category.CreateCategoryDto;
 import mate.academy.bookstore.dto.category.CategoryResponseDto;
 import mate.academy.bookstore.model.Category;
 import org.mapstruct.Mapper;
@@ -10,5 +10,5 @@ import org.mapstruct.Mapper;
 public interface CategoryMapper {
     CategoryResponseDto toDto(Category category);
 
-    Category toEntity(CategoryDto categoryDto);
+    Category toEntity(CreateCategoryDto categoryDto);
 }

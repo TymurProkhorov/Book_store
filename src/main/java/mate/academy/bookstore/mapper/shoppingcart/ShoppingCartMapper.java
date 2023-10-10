@@ -2,7 +2,7 @@ package mate.academy.bookstore.mapper.shoppingcart;
 
 import java.util.stream.Collectors;
 import mate.academy.bookstore.config.MapperConfig;
-import mate.academy.bookstore.dto.shoppingcart.response.ShoppingCartResponseDto;
+import mate.academy.bookstore.dto.shoppingcart.ShoppingCartResponseDto;
 import mate.academy.bookstore.mapper.cartitem.CartItemMapper;
 import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.service.UserService;
