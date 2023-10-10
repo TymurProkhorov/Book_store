@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
@@ -20,7 +19,7 @@ public class JwtUtil {
     private long expiration;
 
     public JwtUtil(@Value("${jwt.secret}") String secretString) {
-        secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        secret = Keys.hmacShaKeyFor(secretString.getBytes());
     }
 
     public String getToken(String userName) {

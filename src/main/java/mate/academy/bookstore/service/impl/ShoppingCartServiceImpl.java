@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.shoppingcart.request.CreateBookItemDto;
 import mate.academy.bookstore.dto.shoppingcart.request.UpdateBookQuantityDto;
 import mate.academy.bookstore.dto.shoppingcart.response.ShoppingCartResponseDto;
+import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.shoppingcart.ShoppingCartMapper;
 import mate.academy.bookstore.model.CartItem;
 import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.model.User;
+import mate.academy.bookstore.repository.cartitem.CartItemRepository;
 import mate.academy.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import mate.academy.bookstore.service.CartItemService;
 import mate.academy.bookstore.service.ShoppingCartService;
@@ -22,6 +24,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemService cartItemService;
     private final ShoppingCartMapper shoppingCartMapper;
     private final UserService userService;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public ShoppingCartResponseDto getUserCart() {
@@ -65,9 +68,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public void removeBookFromCart(Long cartItemId) {
-        cartItemService.deleteById(cartItemId);
-        getUserCart();
+    public ShoppingCartResponseDto removeBookFromCart(Long cartItemId) {
+        if (!cartItemRepository.existsById(cartItemId)) {
+            throw new EntityNotFoundException("can't delete cart item by id: " + cartItemId);
+        }
+        cartItemRepository.deleteById(cartItemId);
+        return getUserCart();
     }
 
     public ShoppingCart getShoppingCartByUser() {

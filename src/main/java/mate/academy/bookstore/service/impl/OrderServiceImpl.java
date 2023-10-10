@@ -22,6 +22,7 @@ import mate.academy.bookstore.service.OrderItemService;
 import mate.academy.bookstore.service.OrderService;
 import mate.academy.bookstore.service.ShoppingCartService;
 import mate.academy.bookstore.service.UserService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,20 +51,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponseDto> getUserOrders() {
+    public List<OrderResponseDto> getOrderHistory(Pageable pageable) {
         return orderRepository.getAllByUser(userService.getAuthenticatedUser()).stream()
                 .map(orderMapper::toDto)
                 .toList();
     }
 
     @Override
-    public OrderResponseDto updateOrderStatus(
+    public void updateOrderStatus(
             Long orderId,
             UpdateOrderStatusRequestDto requestDto) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new EntityNotFoundException("Can't find order by id: " + orderId));
         order.setStatus(requestDto.getStatus());
-        return orderMapper.toDto(order);
+        orderMapper.toDto(order);
     }
 
     @Override

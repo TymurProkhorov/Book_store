@@ -1,8 +1,6 @@
 package mate.academy.bookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +29,6 @@ public class ShoppingCartController {
     @PostMapping
     @Operation(summary = "Add book to shopping cart",
             description = "Adding the book to shopping cart")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Successfully added"),
-            @ApiResponse(responseCode = "409",
-                    description = "Duplicate - The book is already in the shopping cart")
-    })
     @ResponseStatus(HttpStatus.CREATED)
     public ShoppingCartResponseDto addBookToShoppingCart(
             @RequestBody @Valid CreateBookItemDto request) {
@@ -52,11 +45,6 @@ public class ShoppingCartController {
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update book quantity",
             description = "Updating book quantity in user's shopping cart")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully added"),
-            @ApiResponse(responseCode = "404",
-                    description = "Book with this id is not exist in shopping cart!")
-    })
     public ShoppingCartResponseDto updateShoppingCart(
             @PathVariable Long cartItemId,
             @RequestBody @Valid UpdateBookQuantityDto requestDto) {
@@ -66,7 +54,7 @@ public class ShoppingCartController {
     @DeleteMapping("/cart-items/{cartItemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete book", description = "Deleting book by id")
-    public void deleteBookFromCart(@PathVariable Long cartItemId) {
-        shoppingCartService.removeBookFromCart(cartItemId);
+    public ShoppingCartResponseDto deleteBookFromCart(@PathVariable Long cartItemId) {
+        return shoppingCartService.removeBookFromCart(cartItemId);
     }
 }

@@ -9,6 +9,8 @@ import mate.academy.bookstore.dto.order.request.UpdateOrderStatusRequestDto;
 import mate.academy.bookstore.dto.order.response.OrderItemsResponseDto;
 import mate.academy.bookstore.dto.order.response.OrderResponseDto;
 import mate.academy.bookstore.service.OrderService;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,18 +38,18 @@ public class OrderController {
     @GetMapping
     @Operation(summary = "Get user`s orders",
             description = "Getting all user`s orders")
-    public List<OrderResponseDto> getUserOrders() {
-        return orderService.getUserOrders();
+    public List<OrderResponseDto> getOrderHistory(@ParameterObject Pageable pageable) {
+        return orderService.getOrderHistory(pageable);
     }
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Update order status",
             description = "updating user`s order status")
-    public OrderResponseDto updateOrderStatus(
+    public void updateOrderStatus(
             @PathVariable Long id,
             @RequestBody UpdateOrderStatusRequestDto requestDto) {
-        return orderService.updateOrderStatus(id, requestDto);
+        orderService.updateOrderStatus(id, requestDto);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
