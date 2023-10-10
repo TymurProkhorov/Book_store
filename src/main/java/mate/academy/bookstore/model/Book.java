@@ -15,7 +15,9 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import mate.academy.bookstore.validation.Isbn;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -30,47 +32,23 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    private String title;
-
-    @NotNull
-    private String author;
-
-    @NotNull
-    @Isbn
-    @Column(unique = true)
-    private String isbn;
-
-    @Min(0)
-    private BigDecimal price;
-
-    @NotNull
-    private String description;
-
-    @NotNull
-    private String coverImage;
-
     @Column(nullable = false)
-    private boolean isDeleted = false;
-
+    private String title;
+    @Column(nullable = false)
+    private String author;
+    @Column(nullable = false, unique = true)
+    private String isbn;
+    @Column(nullable = false)
+    private BigDecimal price;
+    private String description;
+    private String coverImage;
     @ManyToMany
-    @JoinTable(name = "books_categories",
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JoinTable(name = "book_category",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
-
-    public Book(String title,
-                String author,
-                String isbn,
-                BigDecimal price,
-                String description,
-                String coverImage) {
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.price = price;
-        this.description = description;
-        this.coverImage = coverImage;
-    }
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

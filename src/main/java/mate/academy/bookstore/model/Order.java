@@ -1,9 +1,11 @@
 package mate.academy.bookstore.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,37 +33,25 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    @NotNull
-    @Min(0)
-    private BigDecimal total;
-
-    @NotNull
-    private LocalDateTime orderDate;
-
-    @NotNull
-    private String shippingAddress;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "order")
+    private User user;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    @Column(nullable = false)
+    private BigDecimal total;
+    @Column(nullable = false)
+    private LocalDateTime orderDate;
+    @Column(nullable = false)
+    private String shippingAddress;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    //    @ToString.Exclude
+    //    @EqualsAndHashCode.Exclude
     private Set<OrderItem> orderItems;
-
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
-
-    public enum Status {
-        PENDING,
-        PROCESSED,
-        COMPLETED,
-    }
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

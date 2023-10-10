@@ -5,31 +5,40 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "categories")
 @Data
-@NoArgsConstructor
 @SQLDelete(sql = "UPDATE categories SET is_deleted = true WHERE id=?")
 @Where(clause = "is_deleted = false")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    @Column(unique = true)
+    @Column(nullable = false)
     private String name;
     private String description;
-    @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "categories")
+    private Set<Book> books = new HashSet<>();
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
-    public Category(Long id) {
-        this.id = id;
+    public void addBook(Book book) {
+        books.add(book);
+        book.getCategories().add(this);
     }
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
@@ -22,24 +23,26 @@ import org.hibernate.annotations.Where;
 @Entity
 @Table(name = "shopping_carts")
 @Data
-@SQLDelete(sql = "UPDATE shopping_carts SET is_deleted = TRUE WHERE id=?")
-@Where(clause = "is_deleted=false")
+//@SQLDelete(sql = "UPDATE shopping_carts SET is_deleted = TRUE WHERE id=?")
+//@Where(clause = "is_deleted=false")
 public class ShoppingCart {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @OneToOne(cascade = CascadeType.ALL)
     @MapsId
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
+    @PrimaryKeyJoinColumn(name = "user_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
+    private User user;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "shoppingCart")
     private Set<CartItem> cartItems;
+    //    @Column(nullable = false)
+    //    private boolean isDeleted = false;
 
-    @Column(name = "is_deleted")
-    @NotNull
-    private boolean isDeleted;
+    public void addCartItem(CartItem cartItem) {
+        cartItems.add(cartItem);
+        cartItem.setShoppingCart(this);
+    }
 }
