@@ -3,7 +3,7 @@ package mate.academy.bookstore.service.impl;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.shoppingcart.CreateBookItemDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
-import mate.academy.bookstore.mapper.cartitem.CartItemMapper;
+import mate.academy.bookstore.mapper.CartItemMapper;
 import mate.academy.bookstore.model.CartItem;
 import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.model.User;

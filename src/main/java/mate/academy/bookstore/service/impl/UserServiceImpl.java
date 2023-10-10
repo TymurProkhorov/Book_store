@@ -6,7 +6,7 @@ import mate.academy.bookstore.dto.user.UserRegistrationRequestDto;
 import mate.academy.bookstore.dto.user.UserResponseDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.exception.RegistrationException;
-import mate.academy.bookstore.mapper.user.UserMapper;
+import mate.academy.bookstore.mapper.UserMapper;
 import mate.academy.bookstore.model.Role;
 import mate.academy.bookstore.model.RoleName;
 import mate.academy.bookstore.model.ShoppingCart;

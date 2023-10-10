@@ -1,6 +1,7 @@
 package mate.academy.bookstore.exception;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,55 +19,41 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final DateTimeFormatter FORMATTER
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request
-    ) {
+            HttpHeaders headers, HttpStatusCode status,
+            WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
+        body.put("timestamp", LocalDateTime.now().format(FORMATTER));
         body.put("status", HttpStatus.BAD_REQUEST);
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
-                .map(this::getErrorMessage)
+                .map(this::getErrorMessageForArgumentNotValid)
                 .toList();
         body.put("errors", errors);
         return new ResponseEntity<>(body, headers, status);
     }
 
-    private String getErrorMessage(ObjectError objectError) {
-        if (objectError instanceof FieldError) {
-            String field = ((FieldError) objectError).getField();
-            String message = objectError.getDefaultMessage();
-            return field + " " + message;
-        }
-        return objectError.getDefaultMessage();
-    }
-
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFoundException(
-            EntityNotFoundException ex
-    ) {
+    protected ResponseEntity<Object> handleEntityNotFoundException(
+            EntityNotFoundException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND.value());
+        body.put("timestamp", LocalDateTime.now().format(FORMATTER));
+        body.put("status", HttpStatus.NOT_FOUND);
         body.put("error", "Entity Not Found");
         body.put("message", ex.getMessage());
-
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RegistrationException.class)
-    public ResponseEntity<Object> handleRegistrationException(
-            RegistrationException ex
-    ) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.CONFLICT.value());
-        body.put("error", "User already exists");
-        body.put("message", ex.getMessage());
-
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    private String getErrorMessageForArgumentNotValid(ObjectError e) {
+        if (e instanceof FieldError) {
+            String field = ((FieldError) e).getField();
+            String message = e.getDefaultMessage();
+            return field + " " + message;
+        }
+        return e.getDefaultMessage();
     }
 }

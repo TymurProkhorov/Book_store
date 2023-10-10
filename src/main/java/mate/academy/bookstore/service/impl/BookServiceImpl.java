@@ -6,7 +6,7 @@ import mate.academy.bookstore.dto.book.BookResponseDto;
 import mate.academy.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import mate.academy.bookstore.dto.book.CreateBookRequestDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
-import mate.academy.bookstore.mapper.book.BookMapper;
+import mate.academy.bookstore.mapper.BookMapper;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.repository.book.BookRepository;
 import mate.academy.bookstore.repository.book.specification.BookSpecificationBuilder;
