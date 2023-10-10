@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.Data;
 import mate.academy.bookstore.model.Order;
+import mate.academy.bookstore.model.Status;
 
 @Data
 public class OrderResponseDto {

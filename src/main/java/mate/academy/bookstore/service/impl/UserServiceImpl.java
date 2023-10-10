@@ -11,7 +11,7 @@ import mate.academy.bookstore.model.Role;
 import mate.academy.bookstore.model.RoleName;
 import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.model.User;
-import mate.academy.bookstore.repository.shoppingcart.ShoppingCartRepository;
+import mate.academy.bookstore.repository.cart.ShoppingCartRepository;
 import mate.academy.bookstore.repository.user.RoleRepository;
 import mate.academy.bookstore.repository.user.UserRepository;
 import mate.academy.bookstore.service.UserService;

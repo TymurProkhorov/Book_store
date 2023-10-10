@@ -9,7 +9,7 @@ import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.repository.book.BookRepository;
 import mate.academy.bookstore.repository.cartitem.CartItemRepository;
-import mate.academy.bookstore.repository.shoppingcart.ShoppingCartRepository;
+import mate.academy.bookstore.repository.cart.ShoppingCartRepository;
 import mate.academy.bookstore.service.CartItemService;
 import mate.academy.bookstore.service.UserService;
 import org.springframework.stereotype.Service;
