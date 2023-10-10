@@ -20,7 +20,7 @@ public class JwtUtil {
     private long expiration;
 
     public JwtUtil(@Value("${jwt.secret}") String secretString) {
-        secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        secret = Keys.hmacShaKeyFor(secretString.getBytes());
     }
 
     public String getToken(String userName) {
