@@ -1,9 +1,10 @@
 package mate.academy.bookstore.service;
 
+import mate.academy.bookstore.dto.order.OrderItemResponseDto;
 import mate.academy.bookstore.model.OrderItem;
 
 public interface OrderItemService {
-    OrderItem save(OrderItem orderItem);
+    OrderItemResponseDto findOrderItemByOrderIdAndId(Long orderId, Long itemId);
 
-    OrderItem findByOrderAndId(Long orderId, Long id);
+    OrderItem save(OrderItem orderItem);
 }

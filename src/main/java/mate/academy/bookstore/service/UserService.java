@@ -6,8 +6,7 @@ import mate.academy.bookstore.exception.RegistrationException;
 import mate.academy.bookstore.model.User;
 
 public interface UserService {
-    UserResponseDto register(UserRegistrationRequestDto request)
-            throws RegistrationException;
+    UserResponseDto register(UserRegistrationRequestDto requestDto);
 
-    User getAuthenticatedUser();
+    User getUser();
 }

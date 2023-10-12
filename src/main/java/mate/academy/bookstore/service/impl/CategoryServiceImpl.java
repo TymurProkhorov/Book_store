@@ -35,26 +35,24 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDto save(CreateCategoryDto categoryDto) {
-        final Category category = categoryMapper.toEntity(categoryDto);
-        final Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.toDto(savedCategory);
+        return categoryMapper.toDto(categoryRepository.save(categoryMapper.toModel(categoryDto)));
     }
 
     @Override
     public CategoryResponseDto update(Long id, CreateCategoryDto categoryDto) {
-        if (categoryRepository.existsById(id)) {
-            Category category = new Category();
-            category.setId(id);
-            category.setName(categoryDto.getName());
-            category.setDescription(categoryDto.getDescription());
-            final Category savedCategory = categoryRepository.save(category);
-            return categoryMapper.toDto(savedCategory);
+        if (!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("can't update category by id: " + id);
         }
-        throw new EntityNotFoundException("Category by id " + id + " doesn't exist");
+        Category category = categoryMapper.toModel(categoryDto);
+        category.setId(id);
+        return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override
     public void deleteById(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("can't delete book by id: " + id);
+        }
         categoryRepository.deleteById(id);
     }
 
@@ -66,12 +64,5 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.getBooksByCategoriesId(id).stream()
                 .map(bookMapper::toDtoWithoutCategories)
                 .toList();
-    }
-
-    private Sort.Order parseSortOrder(String sort) {
-        String[] parts = sort.split(",");
-        String property = parts[0];
-        String direction = parts[1].toUpperCase();
-        return new Sort.Order(Sort.Direction.valueOf(direction), property);
     }
 }

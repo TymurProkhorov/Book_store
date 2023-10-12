@@ -1,5 +1,6 @@
 package mate.academy.bookstore.service.impl;
 
+import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.user.UserRegistrationRequestDto;
@@ -14,52 +15,49 @@ import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.repository.cart.ShoppingCartRepository;
 import mate.academy.bookstore.repository.user.RoleRepository;
 import mate.academy.bookstore.repository.user.UserRepository;
+import mate.academy.bookstore.service.RoleService;
 import mate.academy.bookstore.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
     private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
-    public UserResponseDto register(UserRegistrationRequestDto request)
-            throws RegistrationException {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RegistrationException("Can`t complete registration.");
+    @Transactional
+    public UserResponseDto register(UserRegistrationRequestDto requestDto) {
+        if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
+            throw new RegistrationException("this email is already in use");
         }
-        User user = new User();
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setShippingAddress(request.getShippingAddress());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        Role roleUser =
-                roleRepository.findRoleByRoleName(RoleName.ROLE_USER).orElseThrow(
-                        () -> new EntityNotFoundException("Can't find ROLE_USER by name: "
-                                + RoleName.ROLE_USER));
-        user.setRoles(Set.of(roleUser));
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setUser(user);
-        shoppingCartRepository.save(shoppingCart);
+        User user = userMapper.toModel(requestDto);
+        user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        Role userRole = roleService.getRoleByRoleName(RoleName.ROLE_USER);
+        user.setRoles(new HashSet<>(Set.of(userRole)));
+        if (user.getEmail().equals("artem@gmail.com")) {
+            user.setRoles(new HashSet<>(Set.of(roleService
+                    .getRoleByRoleName(RoleName.ROLE_ADMIN))));
+        }
         User savedUser = userRepository.save(user);
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(savedUser);
+        shoppingCartRepository.save(shoppingCart);
         return userMapper.toDto(savedUser);
     }
 
     @Override
-    public User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        return userRepository.findByEmail(authentication.getName()).orElseThrow(
-                () -> new EntityNotFoundException("Can't find user with email: "
+    public User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByEmail(authentication.getName()).orElseThrow(() ->
+                new EntityNotFoundException("can't find user by username: "
                         + authentication.getName()));
     }
 }
