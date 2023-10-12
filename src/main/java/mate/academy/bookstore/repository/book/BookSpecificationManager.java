@@ -1,15 +1,14 @@
 package mate.academy.bookstore.repository.book;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.repository.SpecificationManager;
 import mate.academy.bookstore.repository.SpecificationProvider;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
 public class BookSpecificationManager implements SpecificationManager<Book> {

@@ -1,6 +1,5 @@
 package mate.academy.bookstore.repository.book;
 
-import java.util.Arrays;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.repository.SpecificationProvider;
 import org.springframework.data.jpa.domain.Specification;
