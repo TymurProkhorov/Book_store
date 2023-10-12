@@ -8,7 +8,7 @@ ALTER TABLE categories AUTO_INCREMENT = 1;
 ALTER TABLE book_category AUTO_INCREMENT = 1;
 
 INSERT INTO books (id, title, author, isbn, price, cover_image, description)
-VALUES (1 ,'The mist', 'Stephen King', '1234567890', 100.00, 'mist.jpg', 'story about people trapped in shop with monsters outside');
+VALUES (1 ,'The mist', 'Stephen King', '1234567890', 100.99, 'mist.jpg', 'story about people trapped in shop with monsters outside');
 
 INSERT INTO books (id, title, author, isbn, price, cover_image, description)
 VALUES (2, 'Pet cemetery', 'S.King', '9876543210', 50.00, 'PetCemetery.jpg', 'story about resurrectional cemetery');

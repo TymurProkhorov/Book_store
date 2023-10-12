@@ -192,7 +192,7 @@ public class BookControllerTest {
                 .getResponse().getContentAsString(), new TypeReference<>() {});
         assertNotNull(actual);
         assertEquals(1, actual.size());
-        assertEquals(BigDecimal.valueOf(100.00), actual.get(0).getPrice());
+        assertEquals(BigDecimal.valueOf(100.99), actual.get(0).getPrice());
     }
 
     @Test
