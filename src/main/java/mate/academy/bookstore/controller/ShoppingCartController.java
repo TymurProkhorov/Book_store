@@ -43,7 +43,7 @@ public class ShoppingCartController {
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "Update quantity of book in shopping cart")
     public ShoppingCartResponseDto updateQuantityOfBook(@PathVariable Long cartItemId,
-        @RequestBody @Valid UpdateBookQuantityInCartDto requestDto) {
+            @RequestBody @Valid UpdateBookQuantityInCartDto requestDto) {
         return shoppingCartService.updateQuantityOfBooks(cartItemId, requestDto);
     }
 

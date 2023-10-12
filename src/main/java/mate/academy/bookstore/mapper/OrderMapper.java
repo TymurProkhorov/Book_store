@@ -1,5 +1,6 @@
 package mate.academy.bookstore.mapper;
 
+import java.math.BigDecimal;
 import mate.academy.bookstore.config.MapperConfig;
 import mate.academy.bookstore.dto.order.OrderResponseDto;
 import mate.academy.bookstore.model.Book;
@@ -11,8 +12,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.math.BigDecimal;
-
 @Mapper(config = MapperConfig.class, implementationPackage = "<PACKAGE_NAME>.order.impl")
 public interface OrderMapper {
 
@@ -23,7 +22,7 @@ public interface OrderMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "total", ignore = true)
-    @Mapping(target = "status", expression = "java(com.example.bookwonders.model.Status.PENDING)")
+    @Mapping(target = "status", expression = "java(mate.academy.bookstore.model.Status.PENDING)")
     @Mapping(target = "orderDate", expression = "java(java.time.LocalDateTime.now())")
     Order toOrderFromCart(ShoppingCart shoppingCart);
 
