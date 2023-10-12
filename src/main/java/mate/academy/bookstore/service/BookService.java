@@ -1,25 +1,21 @@
 package mate.academy.bookstore.service;
 
 import java.util.List;
-import mate.academy.bookstore.dto.book.BookDto;
-import mate.academy.bookstore.dto.book.BookDtoWithoutCategoryIds;
-import mate.academy.bookstore.dto.book.BookSearchParameters;
+import java.util.Map;
+import mate.academy.bookstore.dto.book.BookResponseDto;
 import mate.academy.bookstore.dto.book.CreateBookRequestDto;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BookService {
-    BookDto save(CreateBookRequestDto requestDto);
+    BookResponseDto save(CreateBookRequestDto requestDto);
 
-    List<BookDto> findAll(Pageable pageable);
+    BookResponseDto getBookById(Long id);
 
-    BookDto getBookById(Long id);
+    List<BookResponseDto> findAll(Pageable pageable);
 
-    void deleteById(Long id);
+    BookResponseDto update(Long id, CreateBookRequestDto requestDto);
 
-    BookDto update(Long id, CreateBookRequestDto requestDto);
+    List<BookResponseDto> search(Map<String, String> param, Pageable pageable);
 
-    List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable);
-
-    Page<BookDtoWithoutCategoryIds> findAllByCategory(Long id, int page, int size, String sort);
+    void delete(Long id);
 }

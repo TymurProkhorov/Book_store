@@ -1,22 +1,22 @@
 package mate.academy.bookstore.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.book.BookDto;
-import mate.academy.bookstore.dto.book.BookDtoWithoutCategoryIds;
-import mate.academy.bookstore.dto.book.BookSearchParameters;
+import mate.academy.bookstore.dto.book.BookResponseDto;
 import mate.academy.bookstore.dto.book.CreateBookRequestDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
-import mate.academy.bookstore.mapper.book.BookMapper;
+import mate.academy.bookstore.mapper.BookMapper;
 import mate.academy.bookstore.model.Book;
+import mate.academy.bookstore.model.Category;
+import mate.academy.bookstore.repository.SpecificationManager;
 import mate.academy.bookstore.repository.book.BookRepository;
-import mate.academy.bookstore.repository.book.specification.BookSpecificationBuilder;
+import mate.academy.bookstore.repository.category.CategoryRepository;
 import mate.academy.bookstore.service.BookService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -25,62 +25,72 @@ import org.springframework.stereotype.Service;
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final BookSpecificationBuilder bookSpecificationBuilder;
+    private final CategoryRepository categoryRepository;
+    private final SpecificationManager<Book> specificationManager;
 
     @Override
-    public BookDto save(CreateBookRequestDto requestDto) {
-        Book book = bookMapper.toEntity(requestDto);
+    public BookResponseDto save(CreateBookRequestDto requestDto) {
+        Book book = bookMapper.toModel(requestDto);
+        getCategoriesByIds(requestDto.getCategoryIds())
+                .forEach(category -> category.addBook(book));
         return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
-    public List<BookDto> findAll(Pageable pageable) {
-        return bookRepository.findAll(pageable).stream()
-                .map(bookMapper::toDto).toList();
+    public BookResponseDto getBookById(Long id) {
+        return bookMapper.toDto(bookRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("couldn't find book by id: " + id)));
     }
 
     @Override
-    public BookDto getBookById(Long id) {
-        Book book = bookRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Can`t find book by id: " + "id"));
-        return bookMapper.toDto(book);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        bookRepository.deleteById(id);
-    }
-
-    @Override
-    public BookDto update(Long id, CreateBookRequestDto requestDto) {
-        Book book = bookMapper.toEntity(requestDto);
-        book.setId(id);
-        return bookMapper.toDto(bookRepository.save(book));
-    }
-
-    @Override
-    public List<BookDto> search(BookSearchParameters searchParameters, Pageable pageable) {
-        Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
-        return bookRepository.findAll(bookSpecification, pageable)
+    public List<BookResponseDto> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable)
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
 
     @Override
-    public Page<BookDtoWithoutCategoryIds> findAllByCategory(
-            Long id, int page, int size, String sort) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(parseSortOrder(sort)));
-        final List<BookDtoWithoutCategoryIds> bookDtoWithoutCategoryIds
-                = bookRepository.findAllByCategoriesId(id, pageable).stream()
-                .map(bookMapper::toDtoWithoutCategories).toList();
-        return new PageImpl<>(bookDtoWithoutCategoryIds, pageable, bookRepository.count());
+    public BookResponseDto update(Long id, CreateBookRequestDto requestDto) {
+        if (!bookRepository.existsById(id)) {
+            throw new EntityNotFoundException("can't update book by id: " + id);
+        }
+        Book book = bookMapper.toModel(requestDto);
+        getCategoriesByIds(requestDto.getCategoryIds())
+                .forEach(category -> category.addBook(book));
+        book.setId(id);
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
-    private Sort.Order parseSortOrder(String sort) {
-        String[] parts = sort.split(",");
-        String property = parts[0];
-        String direction = parts[1].toUpperCase();
-        return new Sort.Order(Sort.Direction.valueOf(direction), property);
+    @Override
+    public List<BookResponseDto> search(Map<String, String> param,
+                                        Pageable pageable) {
+        Specification<Book> specification = null;
+        for (Map.Entry<String, String> entry : param.entrySet()) {
+            Specification<Book> sp = specificationManager.get(entry.getKey(),
+                    entry.getValue().split(","));
+            specification = specification == null
+                    ? Specification.where(sp)
+                    : specification.and(sp);
+        }
+        return bookRepository.findAll(specification, pageable)
+                .stream()
+                .map(bookMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (!bookRepository.existsById(id)) {
+            throw new EntityNotFoundException("can't delete book by id: " + id);
+        }
+        bookRepository.deleteById(id);
+    }
+
+    private Set<Category> getCategoriesByIds(List<Long> ids) {
+        return ids.stream()
+                .map(categoryRepository::findById)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toSet());
     }
 }

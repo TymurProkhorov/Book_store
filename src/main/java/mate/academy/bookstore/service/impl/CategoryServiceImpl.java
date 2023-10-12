@@ -3,16 +3,15 @@ package mate.academy.bookstore.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.book.BookDtoWithoutCategoryIds;
-import mate.academy.bookstore.dto.category.CategoryDto;
 import mate.academy.bookstore.dto.category.CategoryResponseDto;
+import mate.academy.bookstore.dto.category.CreateCategoryDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
-import mate.academy.bookstore.mapper.book.BookMapper;
-import mate.academy.bookstore.mapper.category.CategoryMapper;
+import mate.academy.bookstore.mapper.BookMapper;
+import mate.academy.bookstore.mapper.CategoryMapper;
 import mate.academy.bookstore.model.Category;
 import mate.academy.bookstore.repository.category.CategoryRepository;
 import mate.academy.bookstore.service.CategoryService;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,27 +33,25 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponseDto save(CategoryDto categoryDto) {
-        final Category category = categoryMapper.toEntity(categoryDto);
-        final Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.toDto(savedCategory);
+    public CategoryResponseDto save(CreateCategoryDto categoryDto) {
+        return categoryMapper.toDto(categoryRepository.save(categoryMapper.toModel(categoryDto)));
     }
 
     @Override
-    public CategoryResponseDto update(Long id, CategoryDto categoryDto) {
-        if (categoryRepository.existsById(id)) {
-            Category category = new Category();
-            category.setId(id);
-            category.setName(categoryDto.getName());
-            category.setDescription(categoryDto.getDescription());
-            final Category savedCategory = categoryRepository.save(category);
-            return categoryMapper.toDto(savedCategory);
+    public CategoryResponseDto update(Long id, CreateCategoryDto categoryDto) {
+        if (!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("can't update category by id: " + id);
         }
-        throw new EntityNotFoundException("Category by id " + id + " doesn't exist");
+        Category category = categoryMapper.toModel(categoryDto);
+        category.setId(id);
+        return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override
     public void deleteById(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("can't delete book by id: " + id);
+        }
         categoryRepository.deleteById(id);
     }
 
@@ -66,12 +63,5 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.getBooksByCategoriesId(id).stream()
                 .map(bookMapper::toDtoWithoutCategories)
                 .toList();
-    }
-
-    private Sort.Order parseSortOrder(String sort) {
-        String[] parts = sort.split(",");
-        String property = parts[0];
-        String direction = parts[1].toUpperCase();
-        return new Sort.Order(Sort.Direction.valueOf(direction), property);
     }
 }

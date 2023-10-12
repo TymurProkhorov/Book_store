@@ -1,18 +1,19 @@
 package mate.academy.bookstore.service;
 
-import mate.academy.bookstore.dto.shoppingcart.request.CreateBookItemDto;
-import mate.academy.bookstore.dto.shoppingcart.request.UpdateBookQuantityDto;
-import mate.academy.bookstore.dto.shoppingcart.response.ShoppingCartResponseDto;
+import mate.academy.bookstore.dto.shoppingcart.AddCartItemRequestDto;
+import mate.academy.bookstore.dto.shoppingcart.ShoppingCartResponseDto;
+import mate.academy.bookstore.dto.shoppingcart.UpdateBookQuantityInCartDto;
 import mate.academy.bookstore.model.ShoppingCart;
 
 public interface ShoppingCartService {
-    ShoppingCartResponseDto getUserCart();
+    ShoppingCartResponseDto getShoppingCart();
 
-    ShoppingCart getCart();
+    ShoppingCartResponseDto addCartItem(AddCartItemRequestDto requestDto);
 
-    ShoppingCartResponseDto addBookToUserCart(CreateBookItemDto requestDto);
+    ShoppingCartResponseDto updateQuantityOfBooks(Long cartItemId,
+                                                  UpdateBookQuantityInCartDto quantity);
 
-    ShoppingCartResponseDto updateBookQuantity(Long id, UpdateBookQuantityDto requestDto);
+    ShoppingCartResponseDto deleteCartItem(Long cartItemId);
 
-    ShoppingCartResponseDto removeBookFromCart(Long cartItemId);
+    ShoppingCart getShoppingCartModel();
 }

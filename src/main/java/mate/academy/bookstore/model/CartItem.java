@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -22,22 +21,14 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "shopping_cart_id")
+    @JoinColumn(name = "shopping_cart_id", nullable = false)
     private ShoppingCart shoppingCart;
-
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "book_id", unique = true)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
-
-    @NotNull
-    @Column(name = "quantity")
-    private Integer quantity;
-
-    @NotNull
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Column(nullable = false)
+    private int quantity;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }
