@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         Role userRole = roleService.getRoleByRoleName(RoleName.ROLE_USER);
         user.setRoles(new HashSet<>(Set.of(userRole)));
-        if (user.getEmail().equals("artem@gmail.com")) {
+        if (user.getEmail().equals("tim@gmail.com")) {
             user.setRoles(new HashSet<>(Set.of(roleService
                     .getRoleByRoleName(RoleName.ROLE_ADMIN))));
         }

@@ -68,6 +68,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCart getShoppingCartModel() {
         User user = userService.getUser();
-        return shoppingCartRepository.findById(user.getId()).get();
+        return shoppingCartRepository.findById(user.getId()).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "ShoppingCart not found for user with ID: " + user.getId()));
     }
 }
