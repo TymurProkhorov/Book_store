@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +47,7 @@ public class OrderController {
             description = "Order placed successfully",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = OrderResponseDto.class))})
-    public OrderResponseDto placeOrder(PlaceOrderDto placeOrderDto) {
+    public OrderResponseDto placeOrder(@RequestBody PlaceOrderDto placeOrderDto) {
         return orderService.placeOrder(placeOrderDto);
     }
 
@@ -57,7 +58,7 @@ public class OrderController {
     @ApiResponse(responseCode = "202",
             description = "Order status updated successfully")
     public void updateOrderStatus(@PathVariable Long orderId,
-                                  UpdateOrderStatusDto updateOrderStatusDto) {
+                                  @RequestBody UpdateOrderStatusDto updateOrderStatusDto) {
         orderService.updateOrderStatus(orderId, updateOrderStatusDto);
     }
 
