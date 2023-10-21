@@ -11,9 +11,11 @@ ___
 
 ### **Summary**
 * Java 17 restful stateless web-Application that allows, depending on role, to explore and purchase books; to manage the book store.
-* Multi-tier architecture used.
-* Application supports CRUD, REST, SOLID, ACID design patterns, repository, DTO, service, controller layers as well.
-* Security implemented using JWT.
+* The project follows the Model-View-Controller (MVC) architectural pattern and is organized into multiple layers,
+making it a multi-tier architecture. The layers include presentation, business logic,
+data access, security, validation, configuration, and mapping.
+* Application supports CRUD, REST, SOLID, ACID design patterns.
+* Security implemented using JWT-tokens.
 * Isbn validation and password field matching provided.
 * Application supports pagination and sorting.
 * Application containerized using docker to provide efficient data management.
